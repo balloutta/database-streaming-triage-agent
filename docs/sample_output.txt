@@ -1,0 +1,115 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                          INCIDENT SELECTED                           ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Scenario:     scenario_4
+Environment:  PROD
+Simulation:   Recurring consumer backlog with DB connection exhaustion
+
+Reported Issue
+------------------------------------------------------------------------
+The dashboard is becoming increasingly delayed even though the main
+services appear to be running. Please investigate.
+
+Starting multi-agent investigation...
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                     INCIDENT TRIAGE FINAL REPORT                     ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Incident
+------------------------------------------------------------------------
+Scenario:     scenario_4
+Environment:  PROD
+Simulation:   Recurring consumer backlog with DB connection exhaustion
+
+The dashboard is becoming increasingly delayed even though the main
+services appear to be running. Please investigate.
+
+Investigation Path
+------------------------------------------------------------------------
+✓ Health & Anomaly Agent
+      ↓
+✓ Infrastructure Agent
+      ↓
+✓ Database Agent
+      ↓
+✓ Historical Incident Retrieval
+      ↓
+✓ Verification Agent
+
+Primary Finding
+------------------------------------------------------------------------
+Critical database connection saturation, causing service rejection and
+operational bottlenecks.
+
+Key Evidence
+------------------------------------------------------------------------
+• Connection Utilization: 98.0% utilization with 98 out of 100 threads
+connected.
+• 37 connection errors were recorded, confirming connection saturation
+and rejection of new connections.
+• The high connection utilization (98.0%) indicates that the system is
+hitting its connection limit, which is the primary bottleneck causing
+operational stress and dashboard delays.
+
+Secondary Observations
+------------------------------------------------------------------------
+• High disk usage (86%) contributes to overall system slowdown and
+resource exhaustion.
+
+Historical Incident Comparison
+------------------------------------------------------------------------
+Matched incident: INC-003
+Historical case: Consumer backlog caused by database connection exhaustion
+Match strength:  STRONG
+
+Matching observations:
+• The current root cause (Critical database connection saturation)
+directly matches the historical root cause (Consumer workers exhausted
+available MariaDB connections).
+• The evidence of 98.0% utilization and recorded connection errors
+confirms the causal mechanism of connection exhaustion, which is the
+core finding of INC-003.
+
+Current differences:
+• The current incident also notes high disk usage (86%), which was a
+secondary observation, whereas INC-003 focused primarily on the
+connection exhaustion aspect.
+
+Historical Solution Assessment
+------------------------------------------------------------------------
+Applicability: APPLICABLE WITH REVIEW
+
+The historical remediation steps directly address the confirmed causal
+mechanism of connection saturation (connection pool review, reducing
+per-worker usage, checking max_connections).
+
+Recommended Actions
+------------------------------------------------------------------------
+1. Review the connection pool configuration for all services connecting
+   to the database to ensure optimal resource allocation.
+2. Investigate the consumer workers or services responsible for the
+   highest connection usage to identify sources of excessive or leaked
+   connections.
+3. Review the database's `max_connections` setting against the expected
+   peak workload to determine if an increase is necessary.
+4. Monitor connection utilization closely after implementing changes,
+   confirming that utilization returns to a safe, sustainable level.
+
+Safety Status
+------------------------------------------------------------------------
+✓ Read-only investigation
+✓ No destructive MCP tools exposed
+✓ No production changes executed
+✓ No automatic service restart performed
+
+The primary bottleneck is resource saturation (connections), not
+replication lag or general service failure.
+
+Overall Assessment
+------------------------------------------------------------------------
+Verification: VERIFIED
+Confidence:   HIGH
+Total runtime: 00:24:33

@@ -1,0 +1,90 @@
+[
+    {
+        "incident_id": "INC-001",
+        "title": "Replication stopped after duplicate-key error",
+        "symptoms": [
+            "reporting data stopped refreshing",
+            "Slave_SQL_Running was No",
+            "duplicate primary key error",
+            "replication lag unavailable"
+        ],
+        "root_cause": "The MariaDB SQL replication thread stopped while applying a transaction that conflicted with an existing row.",
+        "resolution": [
+            "Review the conflicting transaction and affected row.",
+            "Correct the data inconsistency using the approved DBA procedure.",
+            "Resume replication only after the inconsistency is understood."
+        ],
+        "verification": [
+            "Confirm Slave_IO_Running is Yes.",
+            "Confirm Slave_SQL_Running is Yes.",
+            "Confirm Seconds_Behind_Master returns to an expected value."
+        ]
+    },
+    {
+        "incident_id": "INC-002",
+        "title": "Streaming service failure caused by full filesystem",
+        "symptoms": [
+            "streaming service repeatedly stopped",
+            "disk usage above 95 percent",
+            "No space left on device",
+            "failed log writes"
+        ],
+        "root_cause": "The streaming server filesystem became full and prevented the service from writing required files.",
+        "resolution": [
+            "Identify which filesystem is full.",
+            "Review logs and temporary files using the approved cleanup procedure.",
+            "Restore sufficient free disk space.",
+            "Restart the affected service only after operator approval."
+        ],
+        "verification": [
+            "Confirm disk usage returned below the warning threshold.",
+            "Confirm the service remains running.",
+            "Confirm message processing resumes."
+        ]
+    },
+    {
+        "incident_id": "INC-003",
+        "title": "Consumer backlog caused by database connection exhaustion",
+        "symptoms": [
+            "Kafka consumer lag increasing rapidly",
+            "database connection timeout",
+            "too many connections",
+            "failed to obtain database connection",
+            "replication healthy",
+            "Debezium healthy"
+        ],
+        "root_cause": "Consumer workers exhausted the available MariaDB connections. Messages accumulated in Kafka while workers waited for database connections.",
+        "resolution": [
+            "Review the connection pool configured for each consumer worker.",
+            "Reduce excessive per-worker database connection usage where appropriate.",
+            "Review MariaDB max_connections against expected workload.",
+            "Recycle affected consumers only after configuration review and operator approval."
+        ],
+        "verification": [
+            "Confirm database connection utilization returns to a safe level.",
+            "Confirm database timeout errors stop.",
+            "Confirm Kafka consumer lag begins decreasing."
+        ]
+    },
+    {
+        "incident_id": "INC-004",
+        "title": "Debezium connector task failure",
+        "symptoms": [
+            "connector not running",
+            "failed Debezium task",
+            "CDC events stopped",
+            "Kafka consumer had no new events"
+        ],
+        "root_cause": "The Debezium connector task failed and stopped publishing new change events.",
+        "resolution": [
+            "Inspect the connector task error.",
+            "Correct the underlying connector or source issue.",
+            "Restart the connector only after operator approval."
+        ],
+        "verification": [
+            "Confirm connector status is RUNNING.",
+            "Confirm all tasks are RUNNING.",
+            "Confirm new CDC events appear in Kafka."
+        ]
+    }
+]

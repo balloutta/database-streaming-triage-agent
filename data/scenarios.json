@@ -1,0 +1,208 @@
+{
+    "scenario_1": {
+        "name": "Kafka consumer slowdown",
+        "user_report": "The analytics dashboard has not updated for around 20 minutes. Please investigate.",
+        "environment": "PROD",
+        "replication": {
+            "io_running": true,
+            "sql_running": true,
+            "lag_seconds": 0,
+            "last_io_error": "",
+            "last_sql_error": ""
+        },
+        "debezium": {
+            "connector": "analytics-connector",
+            "status": "RUNNING",
+            "tasks_running": 1,
+            "tasks_failed": 0,
+            "last_error": ""
+        },
+        "kafka": {
+            "consumer_group": "analytics-consumer",
+            "lag": 24000,
+            "trend": "increasing"
+        },
+        "database_connections": {
+            "threads_connected": 32,
+            "max_connections": 100,
+            "connection_errors": 0
+        },
+        "server_metrics": {
+            "host": "streaming-01",
+            "cpu_percent": 31,
+            "memory_percent": 52,
+            "disk_percent": 64,
+            "network_status": "NORMAL"
+        },
+        "services": {
+            "analytics_consumer": "RUNNING",
+            "kafka": "RUNNING",
+            "mariadb": "RUNNING"
+        },
+        "logs": {
+            "analytics_consumer": [
+                "Consumer processing rate is below incoming message rate.",
+                "Processing batch took 18.4 seconds.",
+                "Processing batch took 19.1 seconds."
+            ],
+            "mariadb": [],
+            "kafka": []
+        }
+    },
+    "scenario_2": {
+        "name": "MariaDB replication failure",
+        "user_report": "Data in the reporting system suddenly stopped refreshing. Please investigate.",
+        "environment": "PROD",
+        "replication": {
+            "io_running": true,
+            "sql_running": false,
+            "lag_seconds": null,
+            "last_io_error": "",
+            "last_sql_error": "Duplicate entry '983421' for key 'PRIMARY' while applying relay log event."
+        },
+        "debezium": {
+            "connector": "analytics-connector",
+            "status": "RUNNING",
+            "tasks_running": 1,
+            "tasks_failed": 0,
+            "last_error": ""
+        },
+        "kafka": {
+            "consumer_group": "analytics-consumer",
+            "lag": 350,
+            "trend": "stable"
+        },
+        "database_connections": {
+            "threads_connected": 28,
+            "max_connections": 100,
+            "connection_errors": 0
+        },
+        "server_metrics": {
+            "host": "database-01",
+            "cpu_percent": 35,
+            "memory_percent": 58,
+            "disk_percent": 61,
+            "network_status": "NORMAL"
+        },
+        "services": {
+            "analytics_consumer": "RUNNING",
+            "kafka": "RUNNING",
+            "mariadb": "RUNNING"
+        },
+        "logs": {
+            "analytics_consumer": [],
+            "mariadb": [
+                "Slave SQL thread stopped.",
+                "Duplicate entry '983421' for key 'PRIMARY'.",
+                "Error executing replicated transaction."
+            ],
+            "kafka": []
+        }
+    },
+    "scenario_3": {
+        "name": "Infrastructure disk exhaustion",
+        "user_report": "The streaming service keeps stopping and the dashboard is delayed. Please investigate.",
+        "environment": "PROD",
+        "replication": {
+            "io_running": true,
+            "sql_running": true,
+            "lag_seconds": 0,
+            "last_io_error": "",
+            "last_sql_error": ""
+        },
+        "debezium": {
+            "connector": "analytics-connector",
+            "status": "RUNNING",
+            "tasks_running": 1,
+            "tasks_failed": 0,
+            "last_error": ""
+        },
+        "kafka": {
+            "consumer_group": "analytics-consumer",
+            "lag": 6200,
+            "trend": "increasing"
+        },
+        "database_connections": {
+            "threads_connected": 34,
+            "max_connections": 100,
+            "connection_errors": 0
+        },
+        "server_metrics": {
+            "host": "streaming-01",
+            "cpu_percent": 43,
+            "memory_percent": 61,
+            "disk_percent": 97,
+            "network_status": "NORMAL"
+        },
+        "services": {
+            "analytics_consumer": "DEGRADED",
+            "kafka": "RUNNING",
+            "mariadb": "RUNNING"
+        },
+        "logs": {
+            "analytics_consumer": [
+                "No space left on device.",
+                "Unable to write consumer state file.",
+                "Service restarted after write failure."
+            ],
+            "mariadb": [],
+            "kafka": [
+                "Failed to write log segment: No space left on device."
+            ]
+        }
+    },
+    "scenario_4": {
+        "name": "Recurring consumer backlog with DB connection exhaustion",
+        "user_report": "The dashboard is becoming increasingly delayed even though the main services appear to be running. Please investigate.",
+        "environment": "PROD",
+        "replication": {
+            "io_running": true,
+            "sql_running": true,
+            "lag_seconds": 0,
+            "last_io_error": "",
+            "last_sql_error": ""
+        },
+        "debezium": {
+            "connector": "analytics-connector",
+            "status": "RUNNING",
+            "tasks_running": 1,
+            "tasks_failed": 0,
+            "last_error": ""
+        },
+        "kafka": {
+            "consumer_group": "analytics-consumer",
+            "lag": 52000,
+            "trend": "rapidly_increasing"
+        },
+        "database_connections": {
+            "threads_connected": 98,
+            "max_connections": 100,
+            "connection_errors": 37
+        },
+        "server_metrics": {
+            "host": "streaming-01",
+            "cpu_percent": 48,
+            "memory_percent": 68,
+            "disk_percent": 86,
+            "network_status": "NORMAL"
+        },
+        "services": {
+            "analytics_consumer": "RUNNING",
+            "kafka": "RUNNING",
+            "mariadb": "RUNNING"
+        },
+        "logs": {
+            "analytics_consumer": [
+                "Database connection timeout.",
+                "Failed to obtain database connection from pool.",
+                "Database connection timeout.",
+                "Too many connections."
+            ],
+            "mariadb": [
+                "Aborted connection: Too many connections.",
+                "Connection rejected because connection limit was reached."
+            ],
+            "kafka": []
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "replication_lag_warning_seconds": 60,
+    "kafka_consumer_lag_warning": 10000,
+    "kafka_consumer_lag_critical": 40000,
+    "cpu_warning_percent": 85,
+    "memory_warning_percent": 85,
+    "disk_warning_percent": 85,
+    "disk_critical_percent": 95,
+    "database_connection_warning_percent": 90
+}

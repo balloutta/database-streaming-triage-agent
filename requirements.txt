@@ -1,0 +1,6 @@
+mcp==1.30.0
+langchain-mcp-adapters==0.3.2
+langchain==1.4.3
+langgraph==1.2.11
+langchain-ollama==1.1.0
+pydantic==2.13.4
