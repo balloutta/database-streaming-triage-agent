@@ -289,7 +289,7 @@ MODEL_CONTEXT = 16384
 Clone the repository and enter the project directory:
 
 ```powershell
-git clone <YOUR-GITHUB-REPOSITORY-URL>
+git clone https://github.com/balloutta/database-streaming-triage-agent.git
 cd database-streaming-triage-agent
 ```
 
@@ -634,3 +634,4 @@ This project was created as an Agentic AI capstone demonstrating:
 - adversarial safety testing.
 
 The system is intended as an educational prototype and should not be used to make unattended production changes.
+
